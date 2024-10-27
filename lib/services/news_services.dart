@@ -1,5 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 // import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:news_app/constants/constants.dart';
 
@@ -39,7 +40,7 @@ class NewsService {
       var response = await _dio.get(
         'v2/everything?q=$title',
         options: Options(headers: {
-          'X-Api-Key': "dd1b5c0314cc46e784a9296c3cd42136",
+          'X-Api-Key': dotenv.env['NEWS_API_KEY'] ?? "",
         }),
       );
       return response.data;
