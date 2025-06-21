@@ -1,7 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
-// import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:news_app/constants/constants.dart';
 
 class NewsService {
@@ -9,17 +8,19 @@ class NewsService {
       BaseOptions(baseUrl: ApiUrls.baseUrl, responseType: ResponseType.json));
 
   fetchNews() async {
-    // final apiKey = dotenv.get('NEWS_API_KEY', fallback: "");
-    // if (apiKey.isEmpty) { 
-    //   throw Exception("API key is missing!");
-    // }
+    final apiKey = dotenv.env['NEWS_API_KEY'];
+    if (apiKey == null || apiKey.isEmpty) { 
+      throw Exception("API key is missing! Please check your .env file.");
+    }
+    
     try {
       var response = await _dio.get(
         'v2/top-headlines?country=us',
         options: Options(headers: {
-          'X-Api-Key': "dd1b5c0314cc46e784a9296c3cd42136",
+          'X-Api-Key': apiKey,
         }),
       );
+      debugPrint("Response: ${response.data}");
       return response.data;
     } catch (e) {
       // Handle errors appropriately
@@ -31,18 +32,19 @@ class NewsService {
   }
 
   fetchNewsBySearching(String title) async {
-    // final apiKey = dotenv.get('NEWS_API_KEY', fallback: "");
-
-    // if (apiKey.isEmpty) {
-    //   throw Exception("API key is missing!");
-    // }
+    final apiKey = dotenv.env['NEWS_API_KEY'];
+    if (apiKey == null || apiKey.isEmpty) {
+      throw Exception("API key is missing! Please check your .env file.");
+    }
+    
     try {
       var response = await _dio.get(
         'v2/everything?q=$title',
         options: Options(headers: {
-          'X-Api-Key': dotenv.env['NEWS_API_KEY'] ?? "",
+          'X-Api-Key': apiKey,
         }),
       );
+      debugPrint("Search Response: ${response.data}");
       return response.data;
     } catch (e) {
       // Handle errors appropriately
